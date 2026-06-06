@@ -1,13 +1,13 @@
 // your JS code here.
 
 const questionsElement = document.getElementById("questions");
-const scoreElement = document.getElementById("score");
 const submitButton = document.getElementById("submit");
+const scoreElement = document.getElementById("score");
 
-// Get saved progress from sessionStorage
+// Get saved answers from sessionStorage
 let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || [];
 
-// Display saved score from localStorage (if any)
+// Show saved score from localStorage (if any)
 const savedScore = localStorage.getItem("score");
 if (savedScore !== null) {
   scoreElement.textContent = `Your score is ${savedScore} out of 5.`;
@@ -51,8 +51,9 @@ function renderQuestions() {
     const question = questions[i];
 
     const questionElement = document.createElement("div");
-    const questionText = document.createTextNode(question.question);
-    questionElement.appendChild(questionText);
+    questionElement.appendChild(
+      document.createTextNode(question.question)
+    );
 
     for (let j = 0; j < question.choices.length; j++) {
       const choice = question.choices[j];
@@ -62,20 +63,25 @@ function renderQuestions() {
       choiceElement.setAttribute("name", `question-${i}`);
       choiceElement.setAttribute("value", choice);
 
+      // Restore saved answer
       if (userAnswers[i] === choice) {
+        choiceElement.setAttribute("checked", "true");
         choiceElement.checked = true;
       }
 
-      // Save answer to sessionStorage when selected
+      // Save progress in sessionStorage
       choiceElement.addEventListener("change", function () {
         userAnswers[i] = choice;
-        sessionStorage.setItem("progress", JSON.stringify(userAnswers));
+        sessionStorage.setItem(
+          "progress",
+          JSON.stringify(userAnswers)
+        );
       });
 
-      const choiceText = document.createTextNode(choice);
-
       questionElement.appendChild(choiceElement);
-      questionElement.appendChild(choiceText);
+      questionElement.appendChild(
+        document.createTextNode(choice)
+      );
     }
 
     questionsElement.appendChild(questionElement);
@@ -84,7 +90,7 @@ function renderQuestions() {
 
 renderQuestions();
 
-// Submit quiz
+// Submit button functionality
 submitButton.addEventListener("click", function () {
   let score = 0;
 
